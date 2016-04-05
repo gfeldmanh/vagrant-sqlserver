@@ -8,7 +8,7 @@ If (!(Get-module SQLPS)) {
 
 $HostName = $env:COMPUTERNAME
 $smo = 'Microsoft.SqlServer.Management.Smo.'
-$InstanceName = (New-Object ($smo + 'Server') $HostName | Select ServiceName).ServiceName	
+$InstanceName = (New-Object ($smo + 'Server') $HostName | Select Name).Name	
 $ServiceName = "SQL Server ($InstanceName)"
 $wmi = New-Object ($smo + 'Wmi.ManagedComputer')
 $uri = "ManagedComputer[@Name='" + $HostName + "']/ServerInstance[@Name='" + $InstanceName + "']/ServerProtocol[@Name='Tcp']"
