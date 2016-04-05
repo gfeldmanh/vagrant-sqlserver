@@ -1,16 +1,5 @@
 Write-Output 'Installing SQL Server Enterprise 2012...'
-$SQLInstaller = '\\VBOXSVR\common\provision\setup\setup.exe', '\\vmware-host\Shared Folders\-common\provision\setup\setup.exe'
-Write-Output 'Looking for setup.exe...'
-$HostName = $env:COMPUTERNAME
-
-$SQLInstaller | ForEach-Object {
-	$Temp = $_
-	$TestPath = Test-Path $Temp
-	
-	If ($TestPath) {
-		Write-Output "Using path => '$Temp'..."
-		# /PID Missing for obvious reasons...
-		$Args = '/Q /Action=install /INSTANCEID="MSSQLSERVER" /INSTANCENAME="MSSQLSERVER" /IAcceptSQLServerLicenseTerms /FEATURES=SQLEngine,Replication,BC,Conn,SSMS /TCPENABLED=1 /SQLSVCACCOUNT="NT Service\MSSQLSERVER" /AGTSVCACCOUNT="NT Service\SQLSERVERAGENT" /AGTSVCSTARTUPTYPE="Automatic" /SQLSYSADMINACCOUNTS="' + $HostName + '\vagrant" /SECURITYMODE="SQL" /SAPWD="#SAPassword!"'
-		Start-Process $Temp -Wait -ArgumentList $Args
-	}
-}
+$webclient = (new-object net.webclient)
+$webclient.Proxy = $null # http://stackoverflow.com/questions/4415443/system-net-webclient-unreasonably-slow
+$webclient.DownloadFile('http://download.microsoft.com/download/8/D/D/8DD7BDBA-CEF7-4D8E-8C16-D9F69527F909/ENU/x64/SQLEXPR_x64_ENU.exe', 'C:\SQLEXPR_x64_ENU.exe')
+Start-Process 'C:\SQLEXPR_x64_ENU.exe' -Wait -ArgumentList '/Q /Action=install /INSTANCENAME="SQLEXPRESS" /INSTANCEID="SQLExpress" /IAcceptSQLServerLicenseTerms /FEATURES=SQL /TCPENABLED=1 /SECURITYMODE="SQL" /SAPWD="#SAPassword!"'
