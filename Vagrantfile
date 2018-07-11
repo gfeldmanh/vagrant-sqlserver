@@ -29,7 +29,6 @@ Vagrant.configure(2) do |config|
     v.customize ["modifyvm", :id, "--memory", boxconfig[:ram]]
     v.customize ["modifyvm", :id, "--cpus", boxconfig[:cpu]]
     v.customize ["modifyvm", :id, "--ioapic", "on"]
-    v.vm.provision :shell, path: "./provision/create-shortcuts.ps1"
   end
 
   config.vm.network :private_network, ip: "192.168.50.10"
